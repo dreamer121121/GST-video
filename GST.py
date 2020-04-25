@@ -21,15 +21,17 @@ class Bottleneck(nn.Module):
 
 	def __init__(self, inplanes, planes, alpha, beta, stride = 1, downsample = None):
 		super(Bottleneck, self).__init__()
-		self.conv1 = nn.Conv3d(inplanes, planes, kernel_size=1, bias=False)
-		self.bn1 = nn.BatchNorm3d(planes)
+		self.conv1 = nn.Conv3d(inplanes, planes, kernel_size=1, bias=False) #定义一个逐点卷积进行通道融合
+		self.bn1 = nn.BatchNorm3d(planes) #定义一个3DBN操作
+		#定义2D的空间卷积Kernal_size = 1X3X3
 		self.conv2 = nn.Conv3d(planes// beta, planes//alpha*(alpha-1), kernel_size=(1,3,3), stride=(1,stride,stride),
 							   padding=(0,1,1), bias=False)
-		self.Tconv = nn.Conv3d(planes//beta, planes//alpha, kernel_size = 3, bias = False,stride=(1,stride,stride), 
+		#定义时间卷积Kernal_size = 3X3X3
+		self.Tconv = nn.Conv3d(planes//beta, planes//alpha, kernel_size = 3, bias = False,stride=(1,stride,stride), #时域使用的3D卷积并未使用
 								padding = (1,1,1))
-		self.bn2 = nn.BatchNorm3d(planes)
-		self.conv3 = nn.Conv3d(planes, planes * self.expansion, kernel_size=1, bias=False)
-		self.bn3 = nn.BatchNorm3d(planes * self.expansion)
+		self.bn2 = nn.BatchNorm3d(planes)#通道数没变！经过GST后通道数还是planes
+		self.conv3 = nn.Conv3d(planes, planes * self.expansion, kernel_size=1, bias=False) #再一次进行3D的逐点卷积扩充通道
+		self.bn3 = nn.BatchNorm3d(planes * self.expansion)#在一次进行3DBN
 		self.relu = nn.ReLU(inplace=True)
 		self.downsample = downsample
 		self.stride = stride
@@ -42,12 +44,12 @@ class Bottleneck(nn.Module):
 
 		out = self.conv1(x)
 		out = self.bn1(out)
-		out = self.relu(out)
+		out = self.relu(out) #out ==> [batch_size,C,T,W,H]
 
 
 		if self.beta == 2:
-			nchannels = out.size()[1] // self.beta 
-			left  = out[:,:nchannels]
+			nchannels = out.size()[1] // self.beta #out.size()[1]即为输出的通道数
+			left  = out[:,:nchannels] #将通道进行拆分
 			right = out[:,nchannels:]
 
 			out1 = self.conv2(left)
@@ -58,7 +60,7 @@ class Bottleneck(nn.Module):
 			out2 = self.Tconv(out)
 
 
-		out = torch.cat((out1,out2),dim=1)
+		out = torch.cat((out1,out2),dim=1) #在通道维度上进行拼接索引1即为通道
 		out = self.bn2(out)
 		out = self.relu(out)
 		
@@ -68,8 +70,8 @@ class Bottleneck(nn.Module):
 		if self.downsample is not None:
 			residual = self.downsample(residual)
 
-		out += residual
-		out = self.relu(out)
+		out += residual #加上残差
+		out = self.relu(out) #再进行激活一次
 
 		return out
 
@@ -82,7 +84,7 @@ class ResNet(nn.Module):
 		self.conv1 = nn.Conv3d(3, 64, kernel_size=(1,7,7), stride=(1,2,2), padding=(0,3,3),
 							   bias=False)
 		self.bn1 = nn.BatchNorm3d(64)
-		self.relu = nn.ReLU(inplace=True)
+		self.relu = nn.ReLU(inplace=True) #定义Relu激活
 		self.maxpool = nn.MaxPool3d(kernel_size=(1,3,3), stride=(1,2,2), padding=(0,1,1))
 		self.layer1 = self._make_layer(block, 64, layers[0], alpha, beta)
 		self.layer2 = self._make_layer(block, 128, layers[1], alpha, beta, stride=2)
@@ -125,13 +127,15 @@ class ResNet(nn.Module):
 		x = self.layer2(x)
 		x = self.layer3(x)
 		x = self.layer4(x)
+		print("layer4_out.size()",x.size())
 		x = x.transpose(1,2).contiguous()
-		x = x.view((-1,)+x.size()[2:])
-
+		x = x.view((-1,)+x.size()[2:]) #resize成（N*T,C,W,H）
+		print("x.view()",x.size())
 		x = self.avgpool(x)
+		print("avg:",x.size())
 		x = x.view(x.size(0), -1)
 		x = self.fc(x)
-
+		print("out.size():",x.size())
 		return x
 
 
@@ -139,11 +143,11 @@ def resnet50(alpha, beta,**kwargs):
 	"""Constructs a ResNet-50 based model.
 	"""
 	model = ResNet(Bottleneck, [3, 4, 6, 3], alpha, beta, **kwargs)
-	checkpoint = model_zoo.load_url(model_urls['resnet50'])
-	layer_name = list(checkpoint.keys())
+	checkpoint = model_zoo.load_url(model_urls['resnet50'],model_dir='./pretrained/') #加载Imagenet预训练的模型参数
+	layer_name = list(checkpoint.keys()) #checkpoint是一个字典{'layer_name','权重tensor'}
 	for ln in layer_name:
 		if 'conv' in ln or 'downsample.0.weight' in ln:
-			checkpoint[ln] = checkpoint[ln].unsqueeze(2)
+			checkpoint[ln] = checkpoint[ln].unsqueeze(2) #扩充维度，很重要！
 		if 'conv2' in ln:
 			n_out, n_in, _, _, _ = checkpoint[ln].size()
 			checkpoint[ln] = checkpoint[ln][:n_out // alpha * (alpha - 1), :n_in//beta,:,:,:]
@@ -152,20 +156,24 @@ def resnet50(alpha, beta,**kwargs):
 	return model
 
 
-def resnet101(alpha, beta ,**kwargs):
+def resnet101(alpha, beta):
 	"""Constructs a ResNet-101 model.
 	Args:
 		groups
 	"""
-	model = ResNet(Bottleneck, [3, 4, 23, 3], **kwargs)
-	checkpoint = model_zoo.load_url(model_urls['resnet101'])
+	model = ResNet(Bottleneck, [3, 4, 23, 3], alpha,beta)
+	checkpoint = model_zoo.load_url(model_urls['resnet101'],model_dir='./pretrained/')
 	layer_name = list(checkpoint.keys())
 	for ln in layer_name:
 		if 'conv' in ln or 'downsample.0.weight' in ln:
 			checkpoint[ln] = checkpoint[ln].unsqueeze(2)
 		if 'conv2' in ln:
 			n_out, n_in, _, _, _ = checkpoint[ln].size()
-			checkpoint[ln] = checkpoint[ln][:n_out // alpha * (alpha - 1), :n_in//beta,:,:,:]
+			checkpoint[ln] = checkpoint[ln][:n_out // alpha * (alpha - 1),:n_in//beta,:,:,:] #保留空间通道的预训练权重。
 	model.load_state_dict(checkpoint,strict = False)
-
 	return model
+
+if __name__ == '__main__':
+	model = resnet50(8,2)
+	Input = torch.randn([1, 3, 8, 224, 224])  # N,C,T,W,H
+	out = model(Input)

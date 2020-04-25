@@ -24,10 +24,11 @@ def main():
 	args = parser.parse_args()
 	check_rootfolders()
 
+	#对Something-something数据集进行预处理。
 	categories, train_list, val_list, root_path, prefix = datasets_video.return_dataset(args.dataset,args.root_path)
 	num_class = len(categories)
 
-
+	#存储的训练好的模型的名字
 	global store_name 
 	store_name = '_'.join([args.type, args.dataset, args.arch, 'segment%d'% args.num_segments, args.store_name])
 	print(('storing name: ' + store_name))
@@ -39,7 +40,7 @@ def main():
 	else:
 		target_transforms = None
 
-
+	#构建网络
 	model = TemporalModel(num_class, args.num_segments, model = args.type, backbone=args.arch, 
 						alpha = args.alpha, beta = args.beta, 
 						dropout = args.dropout, target_transforms = target_transforms)
@@ -53,11 +54,10 @@ def main():
 
 
 	if torch.cuda.is_available():
-		model = torch.nn.DataParallel(model).cuda()
+		model = torch.nn.DataParallel(model).cuda() #使用单机多卡进行训练
 
-	
 
-	if args.resume:
+	if args.resume: #用于中断训练后继续训练
 		if os.path.isfile(args.resume):
 			print(("=> loading checkpoint '{}'".format(args.resume)))
 			checkpoint = torch.load(args.resume)
@@ -290,6 +290,7 @@ class AverageMeter(object):
 
 def adjust_learning_rate(optimizer, epoch, lr_steps):
 	"""Sets the learning rate to the initial LR decayed by 10 """
+	#按论文中所述前40个epoch使用0.01的学习率，40个epoch之后每10个epoch学习率衰减为原来的0.1，总共训练70个epoch。
 	decay = 0.1 ** (sum(epoch >= np.array(lr_steps)))
 	lr = args.lr * decay
 	decay = args.weight_decay

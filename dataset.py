@@ -49,11 +49,11 @@ class VideoDataSet(data.Dataset):
             return [Image.open(os.path.join(self.root_path, directory, self.image_tmpl.format(1))).convert('RGB')]
     def _parse_list(self):
         # check the frame number is large >3:
-        # usualy it is [video_id, num_frames, class_idx]
+        # usualy it is [video_id, num_frames, class_idx] <== item 一个item就是一段视频
         tmp = [x.strip().split('\t') for x in open(self.list_file)]
         tmp = [item for item in tmp if int(item[1])>=3]
 
-
+        #将视频的描述即上面的item包装成一个类VideoRecord()
         self.video_list = [VideoRecord(item) for item in tmp]
         print(('video number:%d'%(len(self.video_list))))
 
