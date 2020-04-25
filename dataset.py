@@ -50,7 +50,7 @@ class VideoDataSet(data.Dataset):
     def _parse_list(self):
         # check the frame number is large >3:
         # usualy it is [video_id, num_frames, class_idx] <== item 一个item就是一段视频
-        tmp = [x.strip().split('\t') for x in open(self.list_file)]
+        tmp = [x.strip().split(' ') for x in open(self.list_file)]
         tmp = [item for item in tmp if int(item[1])>=3]
 
         #将视频的描述即上面的item包装成一个类VideoRecord()
