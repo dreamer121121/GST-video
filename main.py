@@ -102,7 +102,7 @@ def main():
 		num_workers=args.workers, pin_memory=True)
 
 	# define loss function (criterion) and optimizer
-	criterion = torch.nn.CrossEntropyLoss().cuda()
+	criterion = torch.nn.CrossEntropyLoss().cuda() #交叉熵损失
 	
 	for group in policies:
 		print(('group: {} has {} params, lr_mult: {}, decay_mult: {}'.format(
@@ -128,8 +128,10 @@ def main():
 
 		return
 
-	log_training = open(os.path.join(args.checkpoint_dir,'log', '%s.csv' % store_name), 'w')
+	log_training = open(os.path.join(args.checkpoint_dir,'log', '%s.txt' % store_name), 'w')
 	for epoch in range(args.start_epoch, args.epochs):
+		log_training.write("********************************\n")
+		log_training.write("EPOCH："+str(epoch+1))
 		# adjust learning rate
 		adjust_learning_rate(optimizer, epoch, args.lr_steps)
 		
@@ -149,6 +151,9 @@ def main():
 				'state_dict': model.state_dict(),
 				'best_prec1': best_prec1,
 			}, is_best)
+
+
+		log_training.write("********************************\n")
 
 
 def train(train_loader, model, criterion, optimizer, epoch, log):
@@ -196,7 +201,7 @@ def train(train_loader, model, criterion, optimizer, epoch, log):
 		batch_time.update(time.time() - end)
 		end = time.time()
 
-		if i % args.print_freq == 0:
+		if i % args.print_freq == 0: #每20次迭代打印一次
 			output = ('Epoch: [{0}][{1}/{2}], lr: {lr:.5f}\t'
 					'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
 					'Data {data_time.val:.3f} ({data_time.avg:.3f})\t'
