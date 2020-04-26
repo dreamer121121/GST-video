@@ -127,15 +127,11 @@ class ResNet(nn.Module):
 		x = self.layer2(x)
 		x = self.layer3(x)
 		x = self.layer4(x)
-		print("layer4_out.size()",x.size())
 		x = x.transpose(1,2).contiguous()
 		x = x.view((-1,)+x.size()[2:]) #resize成（N*T,C,W,H）
-		print("x.view()",x.size())
 		x = self.avgpool(x)
-		print("avg:",x.size())
 		x = x.view(x.size(0), -1)
 		x = self.fc(x)
-		print("out.size():",x.size())
 		return x
 
 
