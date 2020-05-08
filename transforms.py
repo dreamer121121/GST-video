@@ -38,9 +38,9 @@ class GroupCenterCrop(object):
     def __init__(self, size):
         self.worker = torchvision.transforms.CenterCrop(size)
 
-    def __call__(self, img_group):
-        return [self.worker(img) for img in img_group]
-
+    def __call__(self, img):
+        img_group, label = img
+        return [self.worker(img) for img in img_group], label
 
 class GroupRandomHorizontalFlip(object):
     """Randomly horizontally flips the given PIL.Image with a probability of 0.5
