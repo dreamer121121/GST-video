@@ -54,7 +54,7 @@ def main():
 
 
 	if torch.cuda.is_available():
-		model = torch.nn.DataParallel(model).cuda() #使用单机多卡进行训练
+		model = model.cuda() #使用单机多卡进行训练
 
 
 	if args.resume: #用于中断训练后继续训练
@@ -64,7 +64,7 @@ def main():
 			
 			args.start_epoch = checkpoint['epoch']
 			best_prec1 = checkpoint['best_prec1']
-			model.module.load_state_dict(checkpoint['state_dict'])
+			model.load_state_dict(checkpoint['state_dict'])
 			print(("=> loaded checkpoint '{}' (epoch {})"
 				  	.format(args.evaluate, checkpoint['epoch'])))
 		else:
@@ -128,10 +128,10 @@ def main():
 
 		return
 
-	log_training = open(os.path.join(args.checkpoint_dir,'log', '%s.txt' % store_name), 'w')
+	log_training = open(os.path.join(args.checkpoint_dir,'log', '%s.txt' % store_name), 'a')
 	for epoch in range(args.start_epoch, args.epochs):
 		log_training.write("********************************\n")
-		log_training.write("EPOCH："+str(epoch+1))
+		log_training.write("EPOCH："+str(epoch+1)+"\n")
 		# adjust learning rate
 		adjust_learning_rate(optimizer, epoch, args.lr_steps)
 		
@@ -173,9 +173,14 @@ def train(train_loader, model, criterion, optimizer, epoch, log):
 		data_time.update(time.time() - end)
 		input = input.cuda(non_blocking = True)
 		target = target.cuda(non_blocking=True)
+		if i == 0:
+			print("input.size()",input.size())
+			print("target.size()",target.size())
 		
 		# compute output
 		output = model(input)
+		if i==0:
+			print("output.size()",output.size())
 		loss = criterion(output, target)
 
 		# measure accuracy and record loss
@@ -210,7 +215,7 @@ def train(train_loader, model, criterion, optimizer, epoch, log):
 					'Prec@5 {top5.val:.3f} ({top5.avg:.3f})'.format(
 						epoch, i, len(train_loader), batch_time=batch_time,
 						data_time=data_time, loss=losses, top1=top1, top5=top5, lr=optimizer.param_groups[-1]['lr']))
-			print(output)
+			#print(output)
 			log.write(output + '\n')
 			log.flush()
 
@@ -253,16 +258,16 @@ def validate(val_loader, model, criterion, iter, log = None):
 				 	 'Prec@5 {top5.val:.3f} ({top5.avg:.3f})'.format(
 				 	  i, len(val_loader), batch_time=batch_time, loss=losses,
 				  	 top1=top1, top5=top5))
-				print(output)
+				#print(output)
 				if log is not None:
 					log.write(output + '\n')
 					log.flush()
 
 	output = ('Testing Results: Prec@1 {top1.avg:.3f} Prec@5 {top5.avg:.3f} Loss {loss.avg:.5f}'
 		  .format(top1=top1, top5=top5, loss=losses))
-	print(output)
+	#print(output)
 	output_best = '\nBest Prec@1: %.3f'%(best_prec1)
-	print(output_best)
+	#print(output_best)
 	if log is not None:
 		log.write(output + ' ' + output_best + '\n')
 		log.flush()
