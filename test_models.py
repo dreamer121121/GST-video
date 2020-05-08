@@ -114,7 +114,7 @@ def eval_video(video_data):
     i, data, label = video_data
     num_crop = args.test_crops #test_crops = 1
 
-    input_var = torch.autograd.Variable(data,volatile=True) #volatile表示是否处于推理
+    input_var = torch.autograd.Variable(data,volatile=True).cuda() #volatile表示是否处于推理
     rst = net(input_var)
     print("rst.size()",rst.size())
     return i, rst.reshape((num_crop, args.test_segments, num_class)).mean(axis=0).reshape(
