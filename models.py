@@ -46,9 +46,8 @@ class TemporalModel(nn.Module):
 			raise ValueError('Unknown model: {}'.format(model))
 		
 		if 'resnet' in backbone:
-			print("base_model.last_layer_name:", self.base_model.last_layer_name)
-			self.base_model.last_layer_name = 'fc' #将模型最后一层的名称改为'fc'
 
+			self.base_model.last_layer_name = 'fc' #将模型最后一层的名称改为'fc'
 			self.input_size = 224
 			self.init_crop_size = 256
 			self.input_mean = [0.485, 0.456, 0.406]
@@ -87,4 +86,3 @@ class TemporalModel(nn.Module):
 	def get_augmentation(self):
 		return torchvision.transforms.Compose([GroupMultiScaleCrop(self.input_size, [1, .875, .75, .66]),
 												   GroupRandomHorizontalFlip(self.target_transforms)])
-	 
