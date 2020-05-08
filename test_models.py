@@ -16,10 +16,8 @@ parser = argparse.ArgumentParser(
     description="Standard video-level testing")
 parser.add_argument('--root_path', type = str, default = './',
                     help = 'root path to video dataset folders')
-parser.add_argument('dataset', type=str, choices=['kinectics', 'diving', 'somethingv2','somethingv1'])
-parser.add_argument('modality', type=str, choices=['RGB', 'Flow', 'RGBDiff'])
-parser.add_argument('test_list', type=str)
-parser.add_argument('weights', type=str)
+parser.add_argument('--dataset', type=str, choices=['kinectics', 'diving', 'somethingv2','somethingv1'])
+parser.add_argument('--checkpoint', type=str)
 parser.add_argument('--arch', type=str, default="resnet101")
 parser.add_argument('--save_scores', type=str, default=None)
 parser.add_argument('--test_segments', type=int, default=8)#每段视频采集25帧，每帧通过边角剪裁和中心剪裁扩展成10帧，总共250帧最终取平均得到最终的分类。
