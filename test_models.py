@@ -8,7 +8,7 @@ from sklearn.metrics import confusion_matrix
 
 from dataset import VideoDataSet
 from models import TemporalModel
-from transforms import *
+from transforms_tsn import *
 
 
 # options

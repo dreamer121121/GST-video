@@ -13,7 +13,7 @@ from torch.nn.utils import clip_grad_norm_ as clip_grad_norm
 
 from dataset import VideoDataSet
 from models import TemporalModel
-from transforms_init import *
+from transforms import *
 from opts import parser
 import datasets_video
 
