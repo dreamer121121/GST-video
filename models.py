@@ -1,5 +1,5 @@
 import torch.nn as nn
-from transforms import *
+from transforms_init import *
 from torch.nn.init import normal_, constant_
 
 

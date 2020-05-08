@@ -125,7 +125,7 @@ for this_weights, this_test_segments, test_file in zip(weights_list, test_segmen
     num_class, args.train_list, val_list, root_path, prefix = dataset_config.return_dataset(args.dataset,
                                                                                             modality)
     print('=> shift: {}, shift_div: {}, shift_place: {}'.format(is_shift, shift_div, shift_place))
-    net = TSN(num_class, this_test_segments if is_shift else 1, modality,
+    net = TemporalModel(num_class, this_test_segments if is_shift else 1, modality,
               base_model=this_arch,
               consensus_type=args.crop_fusion_type,
               img_feature_dim=args.img_feature_dim,
