@@ -114,9 +114,6 @@ class VideoDataSet(data.Dataset):
                 images.extend(seg_imgs)
                 if p < record.num_frames:
                     p += 1
-      
-
-
         process_data,record_label = self.transform((images,record.label))
         return process_data, record_label
 

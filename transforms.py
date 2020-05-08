@@ -89,8 +89,9 @@ class GroupScale(object):
     def __init__(self, size, interpolation=Image.BILINEAR):
         self.worker = torchvision.transforms.Resize(size, interpolation) #保持长宽比不变,将短边resize到指定的尺寸
 
-    def __call__(self, img_group):
-        return [self.worker(img) for img in img_group]
+    def __call__(self, img):
+        img_group, label = img
+        return [self.worker(img) for img in img_group], label
 
 
 class GroupOverSample(object):
