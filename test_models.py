@@ -142,7 +142,7 @@ video_labels = [x[1].item() for x in output]
 print("video_pred",video_pred)
 print("video_labels",video_labels)
 
-cf = confusion_matrix(video_labels, video_pred).astype(float) #创建混淆矩阵。
+cf = confusion_matrix(np.array(video_labels), np.array(video_pred)).astype(float) #创建混淆矩阵。
 
 cls_cnt = cf.sum(axis=1) #总共的视频数量。
 cls_hit = np.diag(cf) #正确预测的数量
