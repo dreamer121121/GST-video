@@ -139,8 +139,8 @@ video_labels = torch.from_numpy(np.array([x[1].item() for x in output]))
 print("video_pred",video_pred)
 print("video_labels",video_labels)
 
-cls_cnt = len(video_labels)
-cls_hit = video_pred.eq(video_labels).sum()
+cls_cnt = float(len(video_labels))
+cls_hit = video_pred.eq(video_labels).sum().item()
 print("cls_cnt:",cls_cnt)
 print("cls_hit:",cls_hit)
 
@@ -154,7 +154,7 @@ print("cls_hit:",cls_hit)
 
 cls_acc = cls_hit / cls_cnt #准确率。
 
-print(cls_acc)
+print("cls_acc",cls_acc)
 
 print('Accuracy {:.02f}%'.format(cls_acc * 100))
 
