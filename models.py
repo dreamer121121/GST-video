@@ -62,9 +62,10 @@ class TemporalModel(nn.Module):
 
 	def forward(self, input):
 		input = input.view((-1, self.num_segments,3) + input.size()[-2:])
-		print("input.view：",input.size())
 		input = input.transpose(1,2).contiguous()
+		print("input to model",input.size())
 		base_out = self.base_model(input) #提取特征
+		print("base_out:",base_out)
 		if self.dropout > 0:
 			base_out = self.new_fc(base_out)
 		base_out = base_out.view((-1,self.num_segments)+base_out.size()[1:])

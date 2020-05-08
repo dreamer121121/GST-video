@@ -174,12 +174,14 @@ def train(train_loader, model, criterion, optimizer, epoch, log):
 		data_time.update(time.time() - end)
 		input = input.cuda(non_blocking = True)
 		target = target.cuda(non_blocking=True)
-		print("input.size()",input.size())
-		print("target.size()",target.size())
-		
+		if args.debug and i==0:
+			print("input.size()",input.size())
+			print("target.size()",target.size())
+
 		# compute output
 		output = model(input)
-		print("output.size()",output.size())
+		if args.debug and i == 0:
+			print("output.size()",output.size())
 		break
 		# loss = criterion(output, target)
 		#

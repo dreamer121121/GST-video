@@ -40,6 +40,8 @@ parser.add_argument('--print-freq', '-p', default=20, type=int,
                     metavar='N', help='print frequency (default: 20)')
 parser.add_argument('--eval-freq', '-ef', default=1, type=int,
                     metavar='N', help='evaluation frequency (default: 1)')
+parser.add_argument('--debug',default=False,action='store_true',type=bool,
+                    help='decide if debug')
 
 # ========================= Runtime Configs ==========================
 parser.add_argument('-j', '--workers', default=16, type=int, metavar='N',
