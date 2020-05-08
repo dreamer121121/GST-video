@@ -38,6 +38,8 @@ parser.add_argument('--type', type=str, default="GST",choices=['GST','R3D','S3D'
                     help = 'type of temporal models, currently support GST,Res3D and S3D')
 parser.add_argument('--alpha', type=int, default=4, help = 'spatial temporal split for output channels')
 parser.add_argument('--beta', type=int, default=2, choices=[1,2], help = 'channel splits for input channels, 1 for GST-Large and 2 for GST')
+parser.add_argument('-b', '--batch-size', default=1, type=int,
+                    metavar='N', help='mini-batch size')
 
 
 args = parser.parse_args()
