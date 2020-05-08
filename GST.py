@@ -131,9 +131,7 @@ class ResNet(nn.Module):
 		x = x.view((-1,)+x.size()[2:]) #resize成（N*T,C,W,H）
 		x = self.avgpool(x)
 		x = x.view(x.size(0), -1)
-		print("GST output before fc:",x.size())
 		x = self.fc(x)
-		print("GST output after fc",x.size())
 		return x
 
 
