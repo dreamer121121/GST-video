@@ -111,13 +111,13 @@ total_num = len(data_loader.dataset)
 output = []
 
 def eval_video(video_data):
-    i, data, label = video_data
-    num_crop = args.test_crops #test_crops = 1
-
-    input_var = torch.autograd.Variable(data,volatile=True).cuda() #volatile表示是否处于推理,此处若不加.cuda()则input_var会在cpu上
-    rst = net(input_var)
-    print("rst.size()",rst.size())
-    return i, rst, label[0]
+    with torch.no_grad():
+        i, data, label = video_data
+        # num_crop = args.test_crops #test_crops = 1 ,此参数留着后面多crops时用
+        input_var = torch.autograd.Variable(data).cuda() #volatile表示是否处于推理,此处若不加.cuda()则input_var会在cpu上
+        rst = net(input_var)
+        print("rst.size()",rst.size())
+        return i, rst, label[0]
 
 
 proc_start_time = time.time()
@@ -129,7 +129,7 @@ for i, (data, label) in data_gen:
         break
     rst = eval_video((i, data, label)) #tuple #处理一段视频
     print("rst[1]",rst[1].size())
-    print("rst[2]",rst[2].size())
+    print("rst[2]",rst[2])
     break
     output.append(rst[1:])
     cnt_time = time.time() - proc_start_time
