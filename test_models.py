@@ -61,11 +61,11 @@ net = TemporalModel(num_class, args.test_segments, model = args.type, backbone=a
 import datasets_video
 categories, train_list, val_list, root_path, prefix = datasets_video.return_dataset(args.dataset, args.root_path)
 #
-# checkpoint = torch.load(args.weights)
-# print("model epoch {} best prec@1: {}".format(checkpoint['epoch'], checkpoint['best_prec1']))
-#
-# base_dict = checkpoint['state_dict']
-# net.load_state_dict(base_dict)
+checkpoint = torch.load(args.weights)
+print("model epoch {} best prec@1: {}".format(checkpoint['epoch'], checkpoint['best_prec1']))
+
+base_dict = checkpoint['state_dict']
+net.load_state_dict(base_dict)
 
 if args.test_crops == 1:
     cropping = torchvision.transforms.Compose([
