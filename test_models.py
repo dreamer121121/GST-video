@@ -116,6 +116,7 @@ def eval_video(video_data):
         # num_crop = args.test_crops #test_crops = 1 ,此参数留着后面多crops时用
         input_var = torch.autograd.Variable(data).cuda() #volatile表示是否处于推理,此处若不加.cuda()则input_var会在cpu上
         rst = net(input_var)
+        rst = rst.data.cpu().numpy().copy()
         return i, rst, label[0]
 
 
