@@ -95,7 +95,10 @@ data_loader = torch.utils.data.DataLoader(
         num_workers=args.workers * 2, pin_memory=True)
 
 for i,(data,label) in enumerate(data_loader):
-    print("data.size()",data.size())
+    output = net(data)
+    print("output")
+
+
 
 
 # if args.gpus is not None:
