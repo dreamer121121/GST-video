@@ -116,7 +116,6 @@ def eval_video(video_data):
         # num_crop = args.test_crops #test_crops = 1 ,此参数留着后面多crops时用
         input_var = torch.autograd.Variable(data).cuda() #volatile表示是否处于推理,此处若不加.cuda()则input_var会在cpu上
         rst = net(input_var)
-        print("rst.size()",rst.size())
         return i, rst, label[0]
 
 
@@ -127,31 +126,30 @@ for i, (data, label) in data_gen:
     #data.size() [1,150,224,224] 当设test_segments = 5
     if i >= max_num:
         break
-    rst = eval_video((i, data, label)) #tuple #处理一段视频
-    print("rst[1]",rst[1].size())
-    print("rst[2]",rst[2])
-    break
+    rst = eval_video((i, data, label)) #tuple #处理一个batch的视频，将batch_size设置为1，即处理一段视频
     output.append(rst[1:])
     cnt_time = time.time() - proc_start_time
     print('video {} done, total {}/{}, average {} sec/video'.format(i, i+1,
                                                                     total_num,
                                                                     float(cnt_time) / (i+1)))
+    break
 
-# video_pred = [np.argmax(np.mean(x[0], axis=0)) for x in output]
-#
-# video_labels = [x[1] for x in output]
-#
-#
-# cf = confusion_matrix(video_labels, video_pred).astype(float) #创建混淆矩阵。
-#
-# cls_cnt = cf.sum(axis=1) #总共的视频数量。
-# cls_hit = np.diag(cf) #正确预测的数量
-#
-# cls_acc = cls_hit / cls_cnt #准确率。
-#
-# print(cls_acc)
-#
-# print('Accuracy {:.02f}%'.format(np.mean(cls_acc) * 100))
+video_pred = [np.argmax(x[0]) for x in output]
+
+video_labels = [x[1] for x in output]
+print("video_pred",video_pred)
+print("video_labels",video_labels)
+
+cf = confusion_matrix(video_labels, video_pred).astype(float) #创建混淆矩阵。
+
+cls_cnt = cf.sum(axis=1) #总共的视频数量。
+cls_hit = np.diag(cf) #正确预测的数量
+
+cls_acc = cls_hit / cls_cnt #准确率。
+
+print(cls_acc)
+
+print('Accuracy {:.02f}%'.format(np.mean(cls_acc) * 100))
 
 # if args.save_scores is not None:
 #
