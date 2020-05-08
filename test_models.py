@@ -136,19 +136,23 @@ for i, (data, label) in data_gen:
     if i == 9:
         break
 
-video_pred = [np.argmax(x[0]) for x in output]
+video_pred = torch.from_numpy(np.array([np.argmax(x[0]) for x in output]))
 
-video_labels = [x[1].item() for x in output]
+video_labels = torch.from_numpy(np.array([x[1].item() for x in output]))
 print("video_pred",video_pred)
 print("video_labels",video_labels)
 
-cf = confusion_matrix(np.array(video_labels), np.array(video_pred)).astype(float) #创建混淆矩阵。
-print("cf",cf)
+cls_cnt = len(video_labels)
+cls_hit = video_pred.eq(video_labels).sum()
+print("correct:",cls_hit)
 
-cls_cnt = cf.sum(axis=1) #总共的视频数量。
-print("cls_cnt:",cls_cnt)
-cls_hit = np.diag(cf) #正确预测的数量
-print("cls_hit:",cls_hit)
+# cf = confusion_matrix(np.array(video_labels), np.array(video_pred)).astype(float) #创建混淆矩阵。
+# print("cf",cf)
+#
+# cls_cnt = cf.sum(axis=1) #总共的视频数量。
+# print("cls_cnt:",cls_cnt)
+# cls_hit = np.diag(cf) #正确预测的数量
+# print("cls_hit:",cls_hit)
 
 cls_acc = cls_hit / cls_cnt #准确率。
 
