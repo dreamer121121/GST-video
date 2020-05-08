@@ -174,8 +174,8 @@ def train(train_loader, model, criterion, optimizer, epoch, log):
 		input = input.cuda(non_blocking = True)
 		target = target.cuda(non_blocking=True)
 		if args.debug and i==0:
-			print("input.size()",input.size())
-			print("target.size()",target.size())
+			print("input.size()",input.size()) #[16,24,224,224]
+			print("target.size()",target.size()) #[16]
 
 		# compute output
 		output = model(input)

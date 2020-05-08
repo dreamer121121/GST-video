@@ -82,10 +82,8 @@ class TemporalModel(nn.Module):
 			base_out = self.new_fc(base_out)
 		base_out = base_out.view((-1,self.num_segments)+base_out.size()[1:])
 		if args.debug:
-			print("base_out after new_fc:",base_out.size())
+			print("base_out after new_fc:",base_out.size()) #[16,8,174]
 		output = base_out.mean(dim=1)
-		if args.debug:
-			print("output.size():",output.size())
 		return output
 
 	
