@@ -125,7 +125,6 @@ def main():
 				'best_prec1': best_prec1,
 			}, is_best)
 
-
 		return
 
 	log_training = open(os.path.join(args.checkpoint_dir,'log', '%s.txt' % store_name), 'a')

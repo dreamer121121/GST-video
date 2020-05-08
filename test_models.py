@@ -14,12 +14,11 @@ import torch.optim
 from sklearn.metrics import confusion_matrix
 from dataset import VideoDataSet
 from models import TemporalModel
-from ops.transforms import *
-from ops import dataset_config
+from transforms import *
 from torch.nn import functional as F
 
 # options
-parser = argparse.ArgumentParser(description="TSM testing on the full validation set")
+parser = argparse.ArgumentParser(description="GST testing on the full validation set")
 parser.add_argument('dataset', type=str)
 
 # may contain splits
@@ -175,18 +174,16 @@ for this_weights, this_test_segments, test_file in zip(weights_list, test_segmen
         raise ValueError("Only 1, 5, 10 crops are supported while we got {}".format(args.test_crops))
 
     data_loader = torch.utils.data.DataLoader(
-            TSNDataSet(root_path, test_file if test_file is not None else val_list, num_segments=this_test_segments,
+            VideoDataSet(root_path, test_file if test_file is not None else val_list, num_segments=this_test_segments,
                        new_length=1 if modality == "RGB" else 5,
-                       modality=modality,
                        image_tmpl=prefix,
                        test_mode=True,
-                       remove_missing=len(weights_list) == 1,
                        transform=torchvision.transforms.Compose([
                            cropping,
                            Stack(roll=(this_arch in ['BNInception', 'InceptionV3'])),
                            ToTorchFormatTensor(div=(this_arch not in ['BNInception', 'InceptionV3'])),
                            GroupNormalize(net.input_mean, net.input_std),
-                       ]), dense_sample=args.dense_sample, twice_sample=args.twice_sample),
+                       ])),
             batch_size=args.batch_size, shuffle=False,
             num_workers=args.workers, pin_memory=True,
     )

@@ -50,7 +50,6 @@ class TemporalModel(nn.Module):
 			raise ValueError('Unknown model: {}'.format(model))
 		
 		if 'resnet' in backbone:
-
 			self.base_model.last_layer_name = 'fc' #将模型最后一层的名称改为'fc'
 			self.input_size = 224
 			self.init_crop_size = 256
