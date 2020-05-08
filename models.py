@@ -47,6 +47,7 @@ class TemporalModel(nn.Module):
 		
 		if 'resnet' in backbone:
 			self.base_model.last_layer_name = 'fc' #将模型最后一层的名称改为'fc'
+			print("base_model.last_layer_name:",self.base_model.last_layer_name)
 			self.input_size = 224
 			self.init_crop_size = 256
 			self.input_mean = [0.485, 0.456, 0.406]
