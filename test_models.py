@@ -146,7 +146,9 @@ cf = confusion_matrix(np.array(video_labels), np.array(video_pred)).astype(float
 print("cf",cf)
 
 cls_cnt = cf.sum(axis=1) #总共的视频数量。
+print("cls_cnt:",cls_cnt)
 cls_hit = np.diag(cf) #正确预测的数量
+print("cls_hit:",cls_hit)
 
 cls_acc = cls_hit / cls_cnt #准确率。
 
