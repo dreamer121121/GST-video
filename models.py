@@ -36,12 +36,16 @@ class TemporalModel(nn.Module):
 			#创建base_model
 			import GST
 			self.base_model = getattr(GST,backbone)(alpha = self.alpha, beta = self.beta) #写法可以借鉴
+			print("test base_model after init")
+			t_input = torch.randn([1, 3, 8, 224, 224])
+			t_out = self.base_model(t_input)
+			print("t_out.size",t_out.size())
 		elif model == 'C3D':
 			import C3D
 			self.base_model = getattr(C3D,backbone)()
 		elif model == 'S3D':
 			import S3D
-			self.base_model = getattr(S3D,backbone)()
+			self.base_model = getattr(S3D,backbone)() #返回的是一个ResNet对象。
 		else:
 			raise ValueError('Unknown model: {}'.format(model))
 		
