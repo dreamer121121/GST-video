@@ -2,7 +2,7 @@ import argparse
 parser = argparse.ArgumentParser(description="PyTorch implementation of action recognition models")
 parser.add_argument('--dataset', type=str, choices=['somethingv1','somethingv2','diving48'],
                    default = 'somethingv1')
-parser.add_argument('--root_path', type = str, default = '../',
+parser.add_argument('--root_path', type = str, default = './',
                     help = 'root path to video dataset folders')
 parser.add_argument('--store_name', type=str, default="")
 
