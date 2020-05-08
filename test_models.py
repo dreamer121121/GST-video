@@ -16,7 +16,7 @@ parser = argparse.ArgumentParser(
     description="Standard video-level testing")
 parser.add_argument('--root_path', type = str, default = './',
                     help = 'root path to video dataset folders')
-parser.add_argument('dataset', type=str, choices=['ucf101', 'hmdb51', 'kinetics','somethingv1'])
+parser.add_argument('dataset', type=str, choices=['kinectics', 'diving', 'somethingv2','somethingv1'])
 parser.add_argument('modality', type=str, choices=['RGB', 'Flow', 'RGBDiff'])
 parser.add_argument('test_list', type=str)
 parser.add_argument('weights', type=str)
