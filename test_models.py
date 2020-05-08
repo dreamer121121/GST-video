@@ -94,11 +94,6 @@ data_loader = torch.utils.data.DataLoader(
         batch_size=1, shuffle=False,
         num_workers=args.workers * 2, pin_memory=True)
 
-for i,(data,label) in enumerate(data_loader):
-    output = net(data)
-    print("output")
-
-
 
 
 # if args.gpus is not None:
@@ -107,52 +102,52 @@ for i,(data,label) in enumerate(data_loader):
 #     devices = list(range(args.workers))
 #
 #
-# net = net.cuda()
-# net.eval()
-#
-# data_gen = enumerate(data_loader)
-#
-# total_num = len(data_loader.dataset)
-# output = []
-#
-#
-# def eval_video(video_data):
-#     i, data, label = video_data
-#     num_crop = args.test_crops
-#     batch_size = label.numel()
-#
-#     if args.modality == 'RGB':
-#         length = 3
-#     elif args.modality == 'Flow':
-#         length = 10
-#     elif args.modality == 'RGBDiff':
-#         length = 18
-#     else:
-#         raise ValueError("Unknown modality "+args.modality)
-#
-#     input_var = torch.autograd.Variable(data.view(-1, length, data.size(2), data.size(3)), #[250,3,224,224]
-#                                         volatile=True) #volatile表示是否处于推理
-#
-#     rst = net(input_var)
-#     return i, rst.reshape((num_crop, args.test_segments, num_class)).mean(axis=0).reshape(
-#         (args.test_segments, 1, num_class)  #(5,1,101)
-#     ), label[0]
-#
-#
-# proc_start_time = time.time()
-# max_num = args.max_num if args.max_num > 0 else len(data_loader.dataset)
-#
-# for i, (data, label) in data_gen:
-#     #data.size() [1,150,224,224] 当设test_segments = 5
-#     if i >= max_num:
-#         break
-#     rst = eval_video((i, data, label)) #tuple #处理一段视频
-#     output.append(rst[1:])
-#     cnt_time = time.time() - proc_start_time
-#     print('video {} done, total {}/{}, average {} sec/video'.format(i, i+1,
-#                                                                     total_num,
-#                                                                     float(cnt_time) / (i+1)))
-#
+net = net.cuda()
+net.eval()
+
+data_gen = enumerate(data_loader)
+
+total_num = len(data_loader.dataset)
+output = []
+
+def eval_video(video_data):
+    i, data, label = video_data
+    num_crop = args.test_crops #test_crops = 1
+
+    if args.modality == 'RGB':
+        length = 3
+    elif args.modality == 'Flow':
+        length = 10
+    elif args.modality == 'RGBDiff':
+        length = 18
+    else:
+        raise ValueError("Unknown modality "+args.modality)
+
+    input_var = torch.autograd.Variable(data,volatile=True) #volatile表示是否处于推理
+    rst = net(input_var)
+    print("rst.size()",rst.size())
+    return i, rst.reshape((num_crop, args.test_segments, num_class)).mean(axis=0).reshape(
+        (args.test_segments, 1, num_class)  #(5,1,101)
+    ), label[0]
+
+
+proc_start_time = time.time()
+max_num = args.max_num if args.max_num > 0 else len(data_loader.dataset)
+
+for i, (data, label) in data_gen:
+    #data.size() [1,150,224,224] 当设test_segments = 5
+    if i >= max_num:
+        break
+    rst = eval_video((i, data, label)) #tuple #处理一段视频
+    print("rst[1]",rst[1].size())
+    print("rst[2]",rst[2].size())
+    break
+    output.append(rst[1:])
+    cnt_time = time.time() - proc_start_time
+    print('video {} done, total {}/{}, average {} sec/video'.format(i, i+1,
+                                                                    total_num,
+                                                                    float(cnt_time) / (i+1)))
+
 # video_pred = [np.argmax(np.mean(x[0], axis=0)) for x in output]
 #
 # video_labels = [x[1] for x in output]
@@ -168,7 +163,7 @@ for i,(data,label) in enumerate(data_loader):
 # print(cls_acc)
 #
 # print('Accuracy {:.02f}%'.format(np.mean(cls_acc) * 100))
-#
+
 # if args.save_scores is not None:
 #
 #     # reorder before saving
