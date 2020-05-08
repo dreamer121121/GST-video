@@ -40,12 +40,12 @@ class TemporalModel(nn.Module):
 			#创建base_model
 			import GST
 			self.base_model = getattr(GST,backbone)(alpha = self.alpha, beta = self.beta) #写法可以借鉴
-			if args.debug:
-				print("=========test base_model after init===========")
-				t_input = torch.randn([16, 3, 8, 224, 224])
-				t_out = self.base_model(t_input)
-				print("t_out.size",t_out.size()) #[8,1000]
-				print("===============================================")
+			# if args.debug:
+			# 	print("=========test base_model after init===========")
+			# 	t_input = torch.randn([16, 3, 8, 224, 224])
+			# 	t_out = self.base_model(t_input)
+			# 	print("t_out.size",t_out.size()) #[8,1000]
+			# 	print("===============================================")
 		elif model == 'C3D':
 			import C3D
 			self.base_model = getattr(C3D,backbone)()
