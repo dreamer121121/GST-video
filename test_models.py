@@ -81,7 +81,7 @@ else:
     raise ValueError("Only 1 and 10 crops are supported while we got {}".format(args.test_crops))
 
 data_loader = torch.utils.data.DataLoader(
-        VideoDataSet(root_path, args.test_list, num_segments=args.test_segments,
+        VideoDataSet(root_path, val_list, num_segments=args.test_segments,
                    new_length=1,
                    image_tmpl=prefix,
                    test_mode=True,
