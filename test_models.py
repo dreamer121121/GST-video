@@ -34,6 +34,9 @@ parser.add_argument('--gpus', nargs='+', type=int, default=None)
 parser.add_argument('--flow_prefix', type=str, default='')
 parser.add_argument('--type', type=str, default="GST",choices=['GST','R3D','S3D'],
                     help = 'type of temporal models, currently support GST,Res3D and S3D')
+parser.add_argument('--alpha', type=int, default=4, help = 'spatial temporal split for output channels')
+parser.add_argument('--beta', type=int, default=2, choices=[1,2], help = 'channel splits for input channels, 1 for GST-Large and 2 for GST')
+
 
 args = parser.parse_args()
 
