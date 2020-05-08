@@ -62,6 +62,7 @@ class TemporalModel(nn.Module):
 
 	def forward(self, input):
 		input = input.view((-1, self.num_segments,3) + input.size()[-2:])
+		print("input.view：",input.size())
 		input = input.transpose(1,2).contiguous()
 		base_out = self.base_model(input) #提取特征
 		if self.dropout > 0:
@@ -82,5 +83,5 @@ class TemporalModel(nn.Module):
 
 	def get_augmentation(self):
 		return torchvision.transforms.Compose([GroupMultiScaleCrop(self.input_size, [1, .875, .75, .66]),
-                                                   GroupRandomHorizontalFlip(self.target_transforms)])
+												   GroupRandomHorizontalFlip(self.target_transforms)])
 	 

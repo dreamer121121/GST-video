@@ -66,7 +66,7 @@ def main():
 			best_prec1 = checkpoint['best_prec1']
 			model.load_state_dict(checkpoint['state_dict'])
 			print(("=> loaded checkpoint '{}' (epoch {})"
-				  	.format(args.evaluate, checkpoint['epoch'])))
+					.format(args.evaluate, checkpoint['epoch'])))
 		else:
 			print(("=> no checkpoint found at '{}'".format(args.resume)))
 
@@ -137,6 +137,7 @@ def main():
 		
 		# train for one epoch
 		train(train_loader, model, criterion, optimizer, epoch, log_training)
+		break
 		
 		# evaluate on validation set
 		if (epoch + 1) % args.eval_freq == 0 or epoch == args.epochs - 1:
@@ -173,52 +174,51 @@ def train(train_loader, model, criterion, optimizer, epoch, log):
 		data_time.update(time.time() - end)
 		input = input.cuda(non_blocking = True)
 		target = target.cuda(non_blocking=True)
-		if i == 0:
-			print("input.size()",input.size())
-			print("target.size()",target.size())
+		print("input.size()",input.size())
+		print("target.size()",target.size())
 		
 		# compute output
 		output = model(input)
-		if i==0:
-			print("output.size()",output.size())
-		loss = criterion(output, target)
-
-		# measure accuracy and record loss
-		prec1, prec5 = accuracy(output, target, topk=(1,5))
-		losses.update(loss.item(), input.size(0))
-		top1.update(prec1[0], input.size(0))
-		top5.update(prec5[0], input.size(0))
-
-
-		# compute gradient and do SGD step
-		optimizer.zero_grad()
-
-		loss.backward()
-
-		if args.clip_gradient is not None:
-			total_norm = clip_grad_norm(model.parameters(), args.clip_gradient)
-			if total_norm > args.clip_gradient:
-				print(("clipping gradient: {} with coef {}".format(total_norm, args.clip_gradient / total_norm)))
-
-		optimizer.step()
-
-		# measure elapsed time
-		batch_time.update(time.time() - end)
-		end = time.time()
-
-		if i % args.print_freq == 0: #每20次迭代打印一次
-			output = ('Epoch: [{0}][{1}/{2}], lr: {lr:.5f}\t'
-					'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
-					'Data {data_time.val:.3f} ({data_time.avg:.3f})\t'
-					'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
-					'Prec@1 {top1.val:.3f} ({top1.avg:.3f})\t'
-					'Prec@5 {top5.val:.3f} ({top5.avg:.3f})'.format(
-						epoch, i, len(train_loader), batch_time=batch_time,
-						data_time=data_time, loss=losses, top1=top1, top5=top5, lr=optimizer.param_groups[-1]['lr']))
-			#print(output)
-			log.write(output + '\n')
-			log.flush()
-
+		print("output.size()",output.size())
+		break
+		# loss = criterion(output, target)
+		#
+		# # measure accuracy and record loss
+		# prec1, prec5 = accuracy(output, target, topk=(1,5))
+		# losses.update(loss.item(), input.size(0))
+		# top1.update(prec1[0], input.size(0))
+		# top5.update(prec5[0], input.size(0))
+		#
+		#
+		# # compute gradient and do SGD step
+		# optimizer.zero_grad()
+		#
+		# loss.backward()
+		#
+		# if args.clip_gradient is not None:
+		# 	total_norm = clip_grad_norm(model.parameters(), args.clip_gradient)
+		# 	if total_norm > args.clip_gradient:
+		# 		print(("clipping gradient: {} with coef {}".format(total_norm, args.clip_gradient / total_norm)))
+		#
+		# optimizer.step()
+		#
+		# # measure elapsed time
+		# batch_time.update(time.time() - end)
+		# end = time.time()
+		#
+		# if i % args.print_freq == 0: #每20次迭代打印一次
+		# 	output = ('Epoch: [{0}][{1}/{2}], lr: {lr:.5f}\t'
+		# 			'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
+		# 			'Data {data_time.val:.3f} ({data_time.avg:.3f})\t'
+		# 			'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
+		# 			'Prec@1 {top1.val:.3f} ({top1.avg:.3f})\t'
+		# 			'Prec@5 {top5.val:.3f} ({top5.avg:.3f})'.format(
+		# 				epoch, i, len(train_loader), batch_time=batch_time,
+		# 				data_time=data_time, loss=losses, top1=top1, top5=top5, lr=optimizer.param_groups[-1]['lr']))
+		# 	#print(output)
+		# 	log.write(output + '\n')
+		# 	log.flush()
+		#
 
 
 def validate(val_loader, model, criterion, iter, log = None):
@@ -252,12 +252,12 @@ def validate(val_loader, model, criterion, iter, log = None):
 
 			if i % args.print_freq == 0:
 				output = ('Test: [{0}/{1}]\t'
-				 	 'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
-				 	 'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
-				 	 'Prec@1 {top1.val:.3f} ({top1.avg:.3f})\t'
-				 	 'Prec@5 {top5.val:.3f} ({top5.avg:.3f})'.format(
-				 	  i, len(val_loader), batch_time=batch_time, loss=losses,
-				  	 top1=top1, top5=top5))
+					 'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
+					 'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
+					 'Prec@1 {top1.val:.3f} ({top1.avg:.3f})\t'
+					 'Prec@5 {top5.val:.3f} ({top5.avg:.3f})'.format(
+					  i, len(val_loader), batch_time=batch_time, loss=losses,
+					 top1=top1, top5=top5))
 				#print(output)
 				if log is not None:
 					log.write(output + '\n')
