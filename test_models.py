@@ -133,9 +133,6 @@ for i, (data, label) in data_gen:
     print('video {} done, total {}/{}, average {} sec/video'.format(i, i+1,
                                                                     total_num,
                                                                     float(cnt_time) / (i+1)))
-    if i == 9:
-        break
-
 video_pred = torch.from_numpy(np.array([np.argmax(x[0]) for x in output]))
 
 video_labels = torch.from_numpy(np.array([x[1].item() for x in output]))
@@ -144,7 +141,8 @@ print("video_labels",video_labels)
 
 cls_cnt = len(video_labels)
 cls_hit = video_pred.eq(video_labels).sum()
-print("correct:",cls_hit)
+print("cls_cnt:",cls_cnt)
+print("cls_hit:",cls_hit)
 
 # cf = confusion_matrix(np.array(video_labels), np.array(video_pred)).astype(float) #创建混淆矩阵。
 # print("cf",cf)
@@ -158,7 +156,7 @@ cls_acc = cls_hit / cls_cnt #准确率。
 
 print(cls_acc)
 
-print('Accuracy {:.02f}%'.format(np.mean(cls_acc) * 100))
+print('Accuracy {:.02f}%'.format(cls_acc * 100))
 
 # if args.save_scores is not None:
 #
