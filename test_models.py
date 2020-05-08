@@ -32,6 +32,8 @@ parser.add_argument('-j', '--workers', default=4, type=int, metavar='N',
                     help='number of data loading workers (default: 4)')
 parser.add_argument('--gpus', nargs='+', type=int, default=None)
 parser.add_argument('--flow_prefix', type=str, default='')
+parser.add_argument('--type', type=str, default="GST",choices=['GST','R3D','S3D'],
+                    help = 'type of temporal models, currently support GST,Res3D and S3D')
 
 args = parser.parse_args()
 
