@@ -17,14 +17,14 @@ from transforms import *
 from opts import parser
 import datasets_video
 
-log_training = open(os.path.join(args.checkpoint_dir, 'log', '%s.txt' % store_name), 'a')
+
 best_prec1 = 0
 
 def main():
 	global args, best_prec1
 	args = parser.parse_args()
 	check_rootfolders()
-
+	log_training = open(os.path.join(args.checkpoint_dir, 'log', '%s.txt' % store_name), 'a')
 	#对Something-something数据集进行预处理。
 	categories, train_list, val_list, root_path, prefix = datasets_video.return_dataset(args.dataset,args.root_path)
 	num_class = len(categories)
