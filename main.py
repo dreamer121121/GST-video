@@ -215,7 +215,7 @@ def train(train_loader, model, criterion, optimizer, epoch, log):
 					'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
 					'Prec@1 {top1.val:.3f} ({top1.avg:.3f})\t'
 					'Prec@5 {top5.val:.3f} ({top5.avg:.3f})'.format(
-						epoch+1, i, len(train_loader), batch_time=batch_time,
+						epoch+1, i+1, len(train_loader), batch_time=batch_time,
 						data_time=data_time, loss=losses, top1=top1, top5=top5, lr=optimizer.param_groups[-1]['lr']))
 			#print(output)
 			log.write(output + '\n')
