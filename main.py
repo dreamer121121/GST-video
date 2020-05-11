@@ -17,6 +17,7 @@ from transforms import *
 from opts import parser
 import datasets_video
 
+log_training = open(os.path.join(args.checkpoint_dir, 'log', '%s.txt' % store_name), 'a')
 best_prec1 = 0
 
 def main():
@@ -59,16 +60,16 @@ def main():
 
 	if args.resume: #用于中断训练后继续训练
 		if os.path.isfile(args.resume):
-			print(("=> loading checkpoint '{}'".format(args.resume)))
+			log_training.write("=> loading checkpoint '{}'\n".format(args.resume))
 			checkpoint = torch.load(args.resume)
 			
 			args.start_epoch = checkpoint['epoch']
 			best_prec1 = checkpoint['best_prec1']
 			model.load_state_dict(checkpoint['state_dict'])
-			print(("=> loaded checkpoint '{}' (epoch {})"
-					.format(args.evaluate, checkpoint['epoch'])))
+			log_training.write("=> loaded checkpoint is evaluate'{}' (epoch {})\n"
+					.format(args.evaluate, checkpoint['epoch']))
 		else:
-			print(("=> no checkpoint found at '{}'".format(args.resume)))
+			log_training.write("=> no checkpoint found at '{}'\n".format(args.resume))
 
 	cudnn.benchmark = True
 
@@ -127,7 +128,7 @@ def main():
 
 		return
 
-	log_training = open(os.path.join(args.checkpoint_dir,'log', '%s.txt' % store_name), 'a')
+
 	for epoch in range(args.start_epoch, args.epochs):
 		log_training.write("********************************\n")
 		log_training.write("EPOCH："+str(epoch+1)+"\n")
@@ -214,7 +215,7 @@ def train(train_loader, model, criterion, optimizer, epoch, log):
 					'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
 					'Prec@1 {top1.val:.3f} ({top1.avg:.3f})\t'
 					'Prec@5 {top5.val:.3f} ({top5.avg:.3f})'.format(
-						epoch, i, len(train_loader), batch_time=batch_time,
+						epoch+1, i, len(train_loader), batch_time=batch_time,
 						data_time=data_time, loss=losses, top1=top1, top5=top5, lr=optimizer.param_groups[-1]['lr']))
 			#print(output)
 			log.write(output + '\n')
