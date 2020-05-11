@@ -1,10 +1,10 @@
 import torch.nn as nn
 from transforms import *
 from torch.nn.init import normal_, constant_
-# from opts import parser
+from opts import parser
 
 
-# args = parser.parse_args()
+args = parser.parse_args()
 
 class TemporalModel(nn.Module):
 	def __init__(self, num_class, num_segments, model, backbone, alpha, beta, 
@@ -40,12 +40,12 @@ class TemporalModel(nn.Module):
 			#创建base_model
 			import GST
 			self.base_model = getattr(GST,backbone)(alpha = self.alpha, beta = self.beta) #写法可以借鉴
-			# if args.debug:
-			# 	print("=========test base_model after init===========")
-			# 	t_input = torch.randn([16, 3, 8, 224, 224])
-			# 	t_out = self.base_model(t_input)
-			# 	print("t_out.size",t_out.size()) #[8,1000]
-			# 	print("===============================================")
+			if args.debug:
+				print("=========test base_model after init===========")
+				t_input = torch.randn([16, 3, 8, 224, 224])
+				t_out = self.base_model(t_input)
+				print("t_out.size",t_out.size()) #[8,1000]
+				print("===============================================")
 		elif model == 'C3D':
 			import C3D
 			self.base_model = getattr(C3D,backbone)()
@@ -73,16 +73,16 @@ class TemporalModel(nn.Module):
 	def forward(self, input):
 		input = input.view((-1, self.num_segments,3) + input.size()[-2:])
 		input = input.transpose(1,2).contiguous()
-		# if args.debug:
-		# 	print("input to model",input.size())
+		if args.debug:
+			print("input to model",input.size())
 		base_out = self.base_model(input) #提取特征
-		# if args.debug:
-		# 	print("base_out:",base_out.size())
+		if args.debug:
+			print("base_out:",base_out.size())
 		if self.dropout > 0:
 			base_out = self.new_fc(base_out)
 		base_out = base_out.view((-1,self.num_segments)+base_out.size()[1:])
-		# if args.debug:
-		# 	print("base_out after new_fc:",base_out.size()) #[16,8,174]
+		if args.debug:
+			print("base_out after new_fc:",base_out.size()) #[16,8,174]
 		output = base_out.mean(dim=1)
 		return output
 
