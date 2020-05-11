@@ -24,7 +24,7 @@ def main():
 	global args, best_prec1
 	args = parser.parse_args()
 	check_rootfolders()
-	log_training = open(os.path.join(args.checkpoint_dir, 'log', '%s.txt' % store_name), 'a')
+
 	#对Something-something数据集进行预处理。
 	categories, train_list, val_list, root_path, prefix = datasets_video.return_dataset(args.dataset,args.root_path)
 	num_class = len(categories)
@@ -33,6 +33,8 @@ def main():
 	global store_name 
 	store_name = '_'.join([args.type, args.dataset, args.arch, 'segment%d'% args.num_segments, args.store_name])
 	print(('storing name: ' + store_name))
+
+	log_training = open(os.path.join(args.checkpoint_dir, 'log', '%s.txt' % store_name), 'a')
 
 	if args.dataset == 'somethingv1' or args.dataset == 'somethingv2':
 		# label transformation for left/right categories
