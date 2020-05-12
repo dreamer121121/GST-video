@@ -34,7 +34,7 @@ def main():
 	store_name = '_'.join([args.type, args.dataset, args.arch, 'segment%d'% args.num_segments, args.store_name])
 	print(('storing name: ' + store_name))
 
-	log_training = open(os.path.join(args.checkpoint_dir, 'log', 'test.txt'), 'a')
+	log_training = open(os.path.join(args.checkpoint_dir, 'log', store_name), 'a')
 
 	if args.dataset == 'somethingv1' or args.dataset == 'somethingv2':
 		# label transformation for left/right categories

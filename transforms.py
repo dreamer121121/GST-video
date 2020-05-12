@@ -37,14 +37,10 @@ class GroupRandomCrop(object):
 
 class GroupCenterCrop(object):
 	def __init__(self, size):
-		# self.target_transforms = target_transforms
 		self.worker = torchvision.transforms.CenterCrop(size)
 
 	def __call__(self, img):
 		img_group,label = img
-		# if self.target_transforms is not None:
-		# 	if label in self.target_transforms:
-		# 		label = self.target_transforms[label]
 		return [self.worker(img) for img in img_group],label
 
 class GroupFiveCrop(object):
