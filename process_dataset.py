@@ -16,7 +16,7 @@ categories = []
 for line in lines:
     line = line.rstrip()
     categories.append(line)
-categories = sorted(categories)
+categories = sorted(categories) #排序了
 with open('category.txt','w') as f:
     f.write('\n'.join(categories))
 

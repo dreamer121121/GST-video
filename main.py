@@ -34,7 +34,7 @@ def main():
 	store_name = '_'.join([args.type, args.dataset, args.arch, 'segment%d'% args.num_segments, args.store_name])
 	print(('storing name: ' + store_name))
 
-	log_training = open(os.path.join(args.checkpoint_dir, 'log', '%s.txt' % store_name), 'a')
+	log_training = open(os.path.join(args.checkpoint_dir, 'log', 'test.txt'), 'a')
 
 	if args.dataset == 'somethingv1' or args.dataset == 'somethingv2':
 		# label transformation for left/right categories
@@ -96,7 +96,7 @@ def main():
 				   random_shift=False,
 				   transform=torchvision.transforms.Compose([
 					   GroupScale(int(scale_size)),
-					   GroupCenterCrop(crop_size),
+					   GroupCenterCrop(crop_size,target_transforms),
 					   Stack(roll=(args.arch in ['BNInception','InceptionV3'])),
 					   ToTorchFormatTensor(div=(args.arch not in ['BNInception','InceptionV3'])),
 					   normalize,
@@ -260,7 +260,7 @@ def validate(val_loader, model, criterion, iter, log = None):
 					 'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
 					 'Prec@1 {top1.val:.3f} ({top1.avg:.3f})\t'
 					 'Prec@5 {top5.val:.3f} ({top5.avg:.3f})'.format(
-					  i, len(val_loader), batch_time=batch_time, loss=losses,
+					  i+1, len(val_loader), batch_time=batch_time, loss=losses,
 					 top1=top1, top5=top5))
 				#print(output)
 				if log is not None:
