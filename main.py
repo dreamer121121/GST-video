@@ -96,7 +96,7 @@ def main():
 				   random_shift=False,
 				   transform=torchvision.transforms.Compose([
 					   GroupScale(int(scale_size)),
-					   GroupCenterCrop(crop_size,target_transforms),
+					   GroupCenterCrop(crop_size),
 					   Stack(roll=(args.arch in ['BNInception','InceptionV3'])),
 					   ToTorchFormatTensor(div=(args.arch not in ['BNInception','InceptionV3'])),
 					   normalize,
