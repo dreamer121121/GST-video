@@ -119,7 +119,7 @@ def main():
 
 	if args.evaluate:
 		log_training.write("***********Using Evaluate Mode***********\n")
-		prec1 = validate(val_loader, model, criterion, 0)
+		prec1 = validate(val_loader, model, criterion, 0,log=log_training)
 		is_best = prec1 > best_prec1
 		best_prec1 = max(prec1, best_prec1)
 		save_checkpoint({
