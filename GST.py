@@ -170,6 +170,10 @@ def resnet101(alpha, beta):
 	return model
 
 if __name__ == '__main__':
-	model = resnet50(8,2)
+	model = resnet50(4,1) #alpha = 1/4,beta = 1
 	Input = torch.randn([1, 3, 8, 224, 224])  # N,C,T,W,H
 	out = model(Input)
+	from thop import profile,clever_format
+	flops, params = profile(model, inputs=(Input,))
+	flops,params = clever_format([flops,params],'%.3f')
+	print("flops {}, params {}".format(flops,params))
