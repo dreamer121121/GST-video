@@ -241,8 +241,7 @@ def validate(val_loader, model, criterion, iter, log = None):
 		for i, (input, target) in enumerate(val_loader):
 			input = input.cuda(non_blocking = True)
 			target = target.cuda(non_blocking = True)
-			if target.item() in unvalidate:
-				print("unvalidate for " + str(i))
+            
 			# compute output
 			output = model(input)
 			loss = criterion(output, target)
