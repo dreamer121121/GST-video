@@ -16,7 +16,7 @@ categories = []
 for line in lines:
     line = line.rstrip()
     categories.append(line)
-categories = sorted(categories) #排序了
+#categories = sorted(categories) #排序了
 with open('category.txt','w') as f:
     f.write('\n'.join(categories))
 
@@ -43,7 +43,7 @@ for (filename_input, filename_output) in zip(files_input, files_output):
         curFolder = folders[i]
         curIDX = idx_categories[i]
         # counting the number of frames in each video folders
-        dir_files = os.listdir(os.path.join('/home/aistudio/data/data30061/20bn-%s'%dataset_name, curFolder))
+        dir_files = os.listdir(os.path.join('/home/aistudio/work/GST-video/somethingv1/20bn-%s'%dataset_name, curFolder))
         output.append('%s %d %d'%(curFolder, len(dir_files), curIDX))
         print('%d/%d'%(i, len(folders)))
     with open(filename_output,'w') as f:
