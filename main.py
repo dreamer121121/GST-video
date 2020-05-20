@@ -227,6 +227,7 @@ def train(train_loader, model, criterion, optimizer, epoch, log):
 
 
 def validate(val_loader, model, criterion, iter, log = None):
+	unvalidate = [86,87,93,94,166,167]
 	batch_time = AverageMeter()
 	losses = AverageMeter()
 	top1 = AverageMeter()
@@ -240,6 +241,8 @@ def validate(val_loader, model, criterion, iter, log = None):
 		for i, (input, target) in enumerate(val_loader):
 			input = input.cuda(non_blocking = True)
 			target = target.cuda(non_blocking = True)
+			if target.item() in unvalidate:
+				print("unvalidate for " + str(i))
 			# compute output
 			output = model(input)
 			loss = criterion(output, target)
@@ -298,7 +301,7 @@ class AverageMeter(object):
 
 	def update(self, val, n=1):
 		self.val = val
-		self.sum += val * n
+		self.sum += val * n #计算一个batch里正确预测的个数
 		self.count += n
 		self.avg = self.sum / self.count
 
