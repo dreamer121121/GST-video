@@ -16,13 +16,13 @@ parser.add_argument('--alpha', type=int, default=4, help = 'spatial temporal spl
 parser.add_argument('--beta', type=int, default=2, choices=[1,2], help = 'channel splits for input channels, 1 for GST-Large and 2 for GST')
 
 # ========================= Learning Configs ==========================
-parser.add_argument('--epochs', default=70, type=int, metavar='N',
+parser.add_argument('--epochs', default=50, type=int, metavar='N',
                     help='number of total epochs to run')
 parser.add_argument('-b', '--batch-size', default=24, type=int,
                     metavar='N', help='mini-batch size')
 parser.add_argument('--lr', '--learning-rate', default=0.01, type=float,
                     metavar='LR', help='initial learning rate')
-parser.add_argument('--lr_steps', default=[50, 60, 75], type=float, nargs="+",
+parser.add_argument('--lr_steps', default=[30, 40, 45], type=float, nargs="+",
                     metavar='LRSteps', help='epochs to decay learning rate by 10') #每10个epoch衰减为原来的1/10
 parser.add_argument('--dropout', '--dp', default=0.3, type=float,
                     metavar='dp', help='dropout ratio')

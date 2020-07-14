@@ -24,6 +24,7 @@ def main():
 	global args, best_prec1
 	args = parser.parse_args()
 	check_rootfolders()
+	print(args)
 
 	#对Something-something数据集进行预处理。
 	categories, train_list, val_list, root_path, prefix = datasets_video.return_dataset(args.dataset,args.root_path)
