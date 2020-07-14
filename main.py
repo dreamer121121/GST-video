@@ -47,123 +47,123 @@ def main():
 	model = TemporalModel(num_class, args.num_segments, model = args.type, backbone=args.arch, 
 						alpha = args.alpha, beta = args.beta, 
 						dropout = args.dropout, target_transforms = target_transforms)
-	Input = torch.randn([1, 3, 8, 224, 224])  # N,C,T,W,H
-	from thop import profile,clever_format
-	flops, params = profile(model, inputs=(Input,))
-	flops,params = clever_format([flops,params],'%.3f')
-	print("flops {}, params {}".format(flops,params))
+	# Input = torch.randn([1, 3, 8, 224, 224])  # N,C,T,W,H
+	# from thop import profile,clever_format
+	# flops, params = profile(model, inputs=(Input,))
+	# flops,params = clever_format([flops,params],'%.3f')
+	# print("flops {}, params {}".format(flops,params))
 
 
-	# crop_size = model.crop_size
-	# scale_size = model.scale_size
-	# input_mean = model.input_mean
-	# input_std = model.input_std
-	# policies = get_optim_policies(model)
-	# train_augmentation = model.get_augmentation()
-	#
-	#
-	# if torch.cuda.is_available():
-	# 	model = model.cuda() #使用单机多卡进行训练
-	#
-	#
-	# if args.resume: #用于中断训练后继续训练
-	# 	if os.path.isfile(args.resume):
-	# 		log_training.write("=> loading checkpoint '{}'\n".format(args.resume))
-	# 		checkpoint = torch.load(args.resume)
-	#
-	# 		args.start_epoch = checkpoint['epoch']
-	# 		best_prec1 = checkpoint['best_prec1']
-	# 		model.load_state_dict(checkpoint['state_dict'])
-	# 		log_training.write("=> loaded checkpoint is evaluate'{}' (epoch {})\n"
-	# 				.format(args.evaluate, checkpoint['epoch']))
-	# 	else:
-	# 		log_training.write("=> no checkpoint found at '{}'\n".format(args.resume))
-	#
-	# cudnn.benchmark = True
-	#
-	# # Data loading code
-	# normalize = GroupNormalize(input_mean, input_std)
-	#
-	# train_loader = torch.utils.data.DataLoader(
-	# 	VideoDataSet(root_path, train_list, num_segments=args.num_segments,
-	# 			   image_tmpl=prefix,
-	# 			   transform=torchvision.transforms.Compose([
-	# 				   train_augmentation,
-	# 				   Stack(roll=(args.arch in ['BNInception','InceptionV3'])),
-	# 				   ToTorchFormatTensor(div=(args.arch not in ['BNInception','InceptionV3'])),
-	# 				   normalize,
-	# 			   ])),
-	# 	batch_size=args.batch_size, shuffle=True, drop_last=True,
-	# 	num_workers=args.workers, pin_memory=True)
-	#
-	# val_loader = torch.utils.data.DataLoader(
-	# 	VideoDataSet(root_path, val_list, num_segments=args.num_segments,
-	# 			   image_tmpl=prefix,
-	# 			   random_shift=False,
-	# 			   transform=torchvision.transforms.Compose([
-	# 				   GroupScale(int(scale_size)),
-	# 				   GroupCenterCrop(crop_size),
-	# 				   Stack(roll=(args.arch in ['BNInception','InceptionV3'])),
-	# 				   ToTorchFormatTensor(div=(args.arch not in ['BNInception','InceptionV3'])),
-	# 				   normalize,
-	# 			   ])),
-	# 	batch_size=args.batch_size, shuffle=False,
-	# 	num_workers=args.workers, pin_memory=True)
-	#
-	# # define loss function (criterion) and optimizer
-	# criterion = torch.nn.CrossEntropyLoss().cuda() #交叉熵损失
-	#
-	# for group in policies:
-	# 	print(('group: {} has {} params, lr_mult: {}, decay_mult: {}'.format(
-	# 		group['name'], len(group['params']), group['lr_mult'], group['decay_mult'])))
-	#
-	# optimizer = torch.optim.SGD(policies,
-	# 							args.lr,
-	# 							momentum=args.momentum,
-	# 							weight_decay=args.weight_decay)
-	#
-	#
-	# if args.evaluate:
-	# 	log_training.write("***********Using Evaluate Mode***********\n")
-	# 	prec1 = validate(val_loader, model, criterion, 0,log=log_training)
-	# 	# is_best = prec1 > best_prec1
-	# 	# best_prec1 = max(prec1, best_prec1)
-	# 	# save_checkpoint({
-	# 	# 		'epoch': args.start_epoch,
-	# 	# 		'arch': args.arch,
-	# 	# 		'state_dict': model.state_dict(),
-	# 	# 		'best_prec1': best_prec1,
-	# 	# 	}, is_best,)
-	#
-	# 	return
-	#
-	#
-	# for epoch in range(args.start_epoch, args.epochs):
-	# 	log_training.write("********************************\n")
-	# 	log_training.write("EPOCH："+str(epoch+1)+"\n")
-	# 	# adjust learning rate
-	# 	adjust_learning_rate(optimizer, epoch, args.lr_steps)
-	#
-	# 	# train for one epoch
-	# 	train(train_loader, model, criterion, optimizer, epoch, log_training)
-	#
-	#
-	# 	# evaluate on validation set
-	# 	if (epoch + 1) % args.eval_freq == 0 or epoch == args.epochs - 1:
-	# 		prec1 = validate(val_loader, model, criterion, (epoch + 1) * len(train_loader), log_training)
-	#
-	# 		# remember best prec@1 and save checkpoint
-	# 		is_best = prec1 > best_prec1
-	# 		best_prec1 = max(prec1, best_prec1)
-	# 		save_checkpoint({
-	# 			'epoch': epoch + 1,
-	# 			'arch': args.arch,
-	# 			'state_dict': model.state_dict(),
-	# 			'best_prec1': best_prec1,
-	# 		}, is_best,epoch+1)
-	#
-	#
-	# 	log_training.write("********************************\n")
+	crop_size = model.crop_size
+	scale_size = model.scale_size
+	input_mean = model.input_mean
+	input_std = model.input_std
+	policies = get_optim_policies(model)
+	train_augmentation = model.get_augmentation()
+
+
+	if torch.cuda.is_available():
+		model = model.cuda() #使用单机多卡进行训练
+
+
+	if args.resume: #用于中断训练后继续训练
+		if os.path.isfile(args.resume):
+			log_training.write("=> loading checkpoint '{}'\n".format(args.resume))
+			checkpoint = torch.load(args.resume)
+
+			args.start_epoch = checkpoint['epoch']
+			best_prec1 = checkpoint['best_prec1']
+			model.load_state_dict(checkpoint['state_dict'])
+			log_training.write("=> loaded checkpoint is evaluate'{}' (epoch {})\n"
+					.format(args.evaluate, checkpoint['epoch']))
+		else:
+			log_training.write("=> no checkpoint found at '{}'\n".format(args.resume))
+
+	cudnn.benchmark = True
+
+	# Data loading code
+	normalize = GroupNormalize(input_mean, input_std)
+
+	train_loader = torch.utils.data.DataLoader(
+		VideoDataSet(root_path, train_list, num_segments=args.num_segments,
+				   image_tmpl=prefix,
+				   transform=torchvision.transforms.Compose([
+					   train_augmentation,
+					   Stack(roll=(args.arch in ['BNInception','InceptionV3'])),
+					   ToTorchFormatTensor(div=(args.arch not in ['BNInception','InceptionV3'])),
+					   normalize,
+				   ])),
+		batch_size=args.batch_size, shuffle=True, drop_last=True,
+		num_workers=args.workers, pin_memory=True)
+
+	val_loader = torch.utils.data.DataLoader(
+		VideoDataSet(root_path, val_list, num_segments=args.num_segments,
+				   image_tmpl=prefix,
+				   random_shift=False,
+				   transform=torchvision.transforms.Compose([
+					   GroupScale(int(scale_size)),
+					   GroupCenterCrop(crop_size),
+					   Stack(roll=(args.arch in ['BNInception','InceptionV3'])),
+					   ToTorchFormatTensor(div=(args.arch not in ['BNInception','InceptionV3'])),
+					   normalize,
+				   ])),
+		batch_size=args.batch_size, shuffle=False,
+		num_workers=args.workers, pin_memory=True)
+
+	# define loss function (criterion) and optimizer
+	criterion = torch.nn.CrossEntropyLoss().cuda() #交叉熵损失
+
+	for group in policies:
+		print(('group: {} has {} params, lr_mult: {}, decay_mult: {}'.format(
+			group['name'], len(group['params']), group['lr_mult'], group['decay_mult'])))
+
+	optimizer = torch.optim.SGD(policies,
+								args.lr,
+								momentum=args.momentum,
+								weight_decay=args.weight_decay)
+
+
+	if args.evaluate:
+		log_training.write("***********Using Evaluate Mode***********\n")
+		prec1 = validate(val_loader, model, criterion, 0,log=log_training)
+		# is_best = prec1 > best_prec1
+		# best_prec1 = max(prec1, best_prec1)
+		# save_checkpoint({
+		# 		'epoch': args.start_epoch,
+		# 		'arch': args.arch,
+		# 		'state_dict': model.state_dict(),
+		# 		'best_prec1': best_prec1,
+		# 	}, is_best,)
+
+		return
+
+
+	for epoch in range(args.start_epoch, args.epochs):
+		log_training.write("********************************\n")
+		log_training.write("EPOCH："+str(epoch+1)+"\n")
+		# adjust learning rate
+		adjust_learning_rate(optimizer, epoch, args.lr_steps)
+
+		# train for one epoch
+		train(train_loader, model, criterion, optimizer, epoch, log_training)
+
+
+		# evaluate on validation set
+		if (epoch + 1) % args.eval_freq == 0 or epoch == args.epochs - 1:
+			prec1 = validate(val_loader, model, criterion, (epoch + 1) * len(train_loader), log_training)
+
+			# remember best prec@1 and save checkpoint
+			is_best = prec1 > best_prec1
+			best_prec1 = max(prec1, best_prec1)
+			save_checkpoint({
+				'epoch': epoch + 1,
+				'arch': args.arch,
+				'state_dict': model.state_dict(),
+				'best_prec1': best_prec1,
+			}, is_best,epoch+1)
+
+
+		log_training.write("********************************\n")
 
 
 def train(train_loader, model, criterion, optimizer, epoch, log):
