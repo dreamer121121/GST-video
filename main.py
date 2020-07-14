@@ -63,7 +63,7 @@ def main():
 
 
 	if torch.cuda.is_available():
-		model = model.cuda() #使用单机多卡进行训练
+		model = nn.DataParallel(model, device_ids=[0, 1, 2, 3]).cuda()#使用单机多卡进行训练
 
 
 	if args.resume: #用于中断训练后继续训练
